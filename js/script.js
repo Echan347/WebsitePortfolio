@@ -17,8 +17,8 @@ if (themeToggleBtn) {
 }
 
 // ==================== Burger Menu ====================
-const burger    = document.getElementById('burger-menu');
-const navLinks  = document.querySelector('.nav-links');
+const burger = document.getElementById('burger-menu');
+const navLinks = document.querySelector('.nav-links');
 const navOverlay = document.getElementById('nav-overlay');
 
 if (burger) {
@@ -147,13 +147,24 @@ const initBgDateTime = () => {
             return;
         }
 
+        // Use Malaysia timezone (UTC+8)
         const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        currentT.textContent = `${hours}:${minutes}`;
+        const malaysiaTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kuala_Lumpur' }));
 
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const dateStr = now.toLocaleDateString('en-US', options).toUpperCase();
+        let hours = malaysiaTime.getHours();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        const minutes = String(malaysiaTime.getMinutes()).padStart(2, '0');
+        const seconds = String(malaysiaTime.getSeconds()).padStart(2, '0');
+        currentT.textContent = `${hours}:${minutes}:${seconds}${ampm}`;
+
+        const options = {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            timeZone: 'Asia/Kuala_Lumpur'
+        };
+        const dateStr = malaysiaTime.toLocaleDateString('en-US', options).toUpperCase();
         currentD.textContent = dateStr;
     };
 
@@ -279,15 +290,15 @@ document.addEventListener('keydown', (e) => {
     const modal = document.getElementById('lightbox-modal');
     if (!modal?.classList.contains('active')) return;
     if (e.key === 'ArrowRight') lightboxNext();
-    if (e.key === 'ArrowLeft')  lightboxPrev();
-    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxPrev();
+    if (e.key === 'Escape') closeLightbox();
 });
 
 // Build gallery clickable items (fallback for static layouts)
 const buildGallery = () => {
     const cards = document.querySelectorAll('.gallery-card');
     if (!cards.length) return;
-    
+
     // If dynamic gallery is not used, populate items array from DOM
     if (!window.galleryItems || window.galleryItems.length === 0) {
         window.galleryItems = [];
@@ -298,7 +309,7 @@ const buildGallery = () => {
             const type = video ? 'video' : 'image';
             const src = type === 'video' ? video.src : (img ? img.src : '');
             window.galleryItems.push({ title, src, type, category: card.dataset.category || 'all' });
-            
+
             card.addEventListener('click', () => openLightbox(i));
         });
     }
@@ -307,7 +318,7 @@ const buildGallery = () => {
 // Gallery Filter
 const setupGalleryFilter = () => {
     const filterBtns = document.querySelectorAll('.gallery-filter-btn');
-    const allCards   = document.querySelectorAll('.gallery-card');
+    const allCards = document.querySelectorAll('.gallery-card');
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -316,7 +327,7 @@ const setupGalleryFilter = () => {
             const cat = btn.dataset.filter;
             allCards.forEach(card => {
                 card.style.display = (cat === 'all' || card.dataset.category === cat)
-                    ? 'block' : 'none';
+                    ? 'inline-block' : 'none';
             });
         });
     });
@@ -331,19 +342,19 @@ const initContactForm = () => {
 
     contactForm.addEventListener('submit', async function (e) {
         e.preventDefault();
-        const submitBtn      = this.querySelector('button[type="submit"]');
-        const originalText   = submitBtn.textContent;
-        const nameVal        = this.querySelector('input[type="text"]').value.trim();
-        const emailVal       = this.querySelector('input[type="email"]').value.trim();
-        const msgVal         = this.querySelector('textarea').value.trim();
-        const formData       = { name: nameVal, email: emailVal, message: msgVal };
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        const nameVal = this.querySelector('input[type="text"]').value.trim();
+        const emailVal = this.querySelector('input[type="email"]').value.trim();
+        const msgVal = this.querySelector('textarea').value.trim();
+        const formData = { name: nameVal, email: emailVal, message: msgVal };
 
-        submitBtn.disabled  = true;
+        submitBtn.disabled = true;
         submitBtn.innerHTML = `<span class="btn-spinner"></span> Sending...`;
 
         if (!GOOGLE_SHEET_WEBAPP_URL) {
             setTimeout(() => {
-                submitBtn.disabled  = false;
+                submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
                 showFormAlert(contactForm, 'success', 'Demo mode: Add your Google Sheets URL in js/script.js to save messages!');
                 this.reset();
@@ -358,7 +369,7 @@ const initContactForm = () => {
                 body: JSON.stringify(formData)
             });
             const result = await response.json();
-            submitBtn.disabled  = false;
+            submitBtn.disabled = false;
             submitBtn.textContent = originalText;
             if (result.result === 'success') {
                 showFormAlert(contactForm, 'success', 'Message sent! I will get back to you soon.');
@@ -367,7 +378,7 @@ const initContactForm = () => {
                 showFormAlert(contactForm, 'error', 'Error: ' + (result.error || 'Unknown'));
             }
         } catch {
-            submitBtn.disabled  = false;
+            submitBtn.disabled = false;
             submitBtn.textContent = originalText;
             showFormAlert(contactForm, 'success', 'Message submitted! (Network note: check your Google Sheets setup)');
             this.reset();
@@ -404,12 +415,12 @@ const runPageInitializers = (pathname, hash) => {
     // 2. Update active link in the navbar
     const map = {
         'index.html': 'nav-home',
-        '':           'nav-home',
-        'projects.html':     'nav-projects',
-        'work.html':         'nav-work',
-        'school.html':       'nav-school',
-        'certification.html':'nav-cert',
-        'gallery.html':      'nav-gallery',
+        '': 'nav-home',
+        'projects.html': 'nav-projects',
+        'work.html': 'nav-work',
+        'school.html': 'nav-school',
+        'certification.html': 'nav-cert',
+        'gallery.html': 'nav-gallery',
     };
 
     document.querySelectorAll('.nav-links a').forEach(link => {
@@ -440,8 +451,8 @@ const runPageInitializers = (pathname, hash) => {
             window.renderGallery();
         } else {
             buildGallery();
-            setupGalleryFilter();
         }
+        setupGalleryFilter();
     }
 
     // 4. Re-observe fade-in elements

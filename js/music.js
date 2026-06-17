@@ -57,7 +57,7 @@ let sideVisAnimId    = null;
 let simVisAnimId     = null;
 let audioContextReady = false;
 
-const SIDE_BAR_COUNT = 20;
+const SIDE_BAR_COUNT = 40;
 
 // ── Build side bars (horizontal) ─────────────────────────────────────────────
 const buildSideBars = () => {
@@ -88,7 +88,7 @@ const initAudioContext = () => {
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 128;
+        analyser.fftSize = 256;
         audioSource = audioContext.createMediaElementSource(audio);
         audioSource.connect(analyser);
         analyser.connect(audioContext.destination);
@@ -115,25 +115,54 @@ const startSimulatedSideVis = () => {
 
     const draw = () => {
         simVisAnimId = requestAnimationFrame(draw);
-        phase += 0.07;
+        phase += 0.08;
+
+        // Calculate a simulated beat pulse at 120 BPM (500ms per beat)
+        const beatMs = 500;
+        const timeInBeat = Date.now() % beatMs;
+        const beatPulse = Math.exp(-timeInBeat / 120); // Exponential decay (sharp attack, smooth decay)
+
         leftBars.forEach((bar, i) => {
-            const wave  = Math.sin(phase + i * 0.35) * 0.4 + 0.6;
+            // mi represents distance from bottom (0 at bottom, SIDE_BAR_COUNT-1 at top)
+            const mi = SIDE_BAR_COUNT - 1 - i;
+            const isBass = mi < 12; // Bottom 12 bars are bass
+            const wave = Math.sin(phase + mi * 0.25) * 0.35 + 0.45;
             const noise = Math.random() * 0.12;
-            const pct   = Math.min(100, Math.max(4, (wave + noise) * 100));
+
+            let val = wave + noise;
+            if (isBass) {
+                // Bass frequencies pulse strongly on the simulated kick beat
+                val += beatPulse * 0.45;
+            } else {
+                // Mid/Highs react with a slight delay/wave shift
+                val += beatPulse * 0.18 * Math.sin(phase - mi * 0.15);
+            }
+
+            const pct = Math.min(100, Math.max(4, val * 100));
             bar.style.width = pct + '%';
             const l = 35 + (pct / 100) * 25;
             bar.style.background  = `hsl(0,100%,${l}%)`;
-            bar.style.boxShadow   = pct > 70 ? `0 0 6px hsl(0,100%,${l}%)` : 'none';
+            bar.style.boxShadow   = pct > 75 ? `0 0 6px hsl(0,100%,${l}%)` : 'none';
         });
+
         rightBars.forEach((bar, i) => {
-            const mi   = (SIDE_BAR_COUNT - 1 - i);
-            const wave = Math.sin(phase + mi * 0.35) * 0.4 + 0.6;
+            const mi = SIDE_BAR_COUNT - 1 - i;
+            const isBass = mi < 12;
+            const wave = Math.sin(phase + mi * 0.25) * 0.35 + 0.45;
             const noise = Math.random() * 0.12;
-            const pct   = Math.min(100, Math.max(4, (wave + noise) * 100));
+
+            let val = wave + noise;
+            if (isBass) {
+                val += beatPulse * 0.45;
+            } else {
+                val += beatPulse * 0.18 * Math.sin(phase - mi * 0.15);
+            }
+
+            const pct = Math.min(100, Math.max(4, val * 100));
             bar.style.width = pct + '%';
             const l = 35 + (pct / 100) * 25;
             bar.style.background  = `hsl(0,100%,${l}%)`;
-            bar.style.boxShadow   = pct > 70 ? `0 0 6px hsl(0,100%,${l}%)` : 'none';
+            bar.style.boxShadow   = pct > 75 ? `0 0 6px hsl(0,100%,${l}%)` : 'none';
         });
     };
     draw();
@@ -150,16 +179,19 @@ const startSideVis = () => {
 
     const leftBars   = Array.from(sideVisLeft.querySelectorAll('.sv-bar'));
     const rightBars  = Array.from(sideVisRight.querySelectorAll('.sv-bar'));
-    const bufLen     = analyser.frequencyBinCount;
+    const bufLen     = analyser.frequencyBinCount; // 128 (fftSize = 256)
     const dataArray  = new Uint8Array(bufLen);
-    const step       = Math.max(1, Math.floor(bufLen / SIDE_BAR_COUNT));
+    const step       = Math.max(1, Math.floor(bufLen / SIDE_BAR_COUNT)); // 128 / 40 = 3
 
     const draw = () => {
         sideVisAnimId = requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
 
+        // Symmetric mapping: Bass is at the bottom (mi = 0, index = 39)
+        // and Treble is at the top (mi = 39, index = 0)
         leftBars.forEach((bar, i) => {
-            const v   = dataArray[i * step] || 0;
+            const mi  = (SIDE_BAR_COUNT - 1 - i) * step;
+            const v   = dataArray[mi] || 0;
             const pct = Math.max(4, (v / 255) * 100);
             bar.style.width = pct + '%';
             const l = 35 + (v / 255) * 25;

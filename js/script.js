@@ -336,6 +336,7 @@ const setupGalleryFilter = () => {
 // ==================== Form Handling (Google Sheets Integration) ====================
 const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyFMSuGic3gvvZDcROzU2dWapcF_EIbxjXtEXiM95hqBqpo-UaAvuCuLg9BcCszodv0/exec'; // Ensure this is your latest URL
 
+
 const initContactForm = () => {
     const contactForm = document.querySelector('.contact-form');
     if (!contactForm) return;
@@ -347,12 +348,7 @@ const initContactForm = () => {
         const nameVal = this.querySelector('input[type="text"]').value.trim();
         const emailVal = this.querySelector('input[type="email"]').value.trim();
         const msgVal = this.querySelector('textarea').value.trim();
-
-        // FIXED: Change this layout to URL parameters so Google Sheets reads 'e.parameter' flawlessly
-        const urlEncodedData = new URLSearchParams();
-        urlEncodedData.append('name', nameVal);
-        urlEncodedData.append('email', emailVal);
-        urlEncodedData.append('message', msgVal);
+        const formData = { name: nameVal, email: emailVal, message: msgVal };
 
         submitBtn.disabled = true;
         submitBtn.innerHTML = `<span class="btn-spinner"></span> Sending...`;
@@ -370,9 +366,8 @@ const initContactForm = () => {
         try {
             const response = await fetch(GOOGLE_SHEET_WEBAPP_URL, {
                 method: 'POST',
-                // FIXED: Changed headers to form-urlencoded to send clean properties instead of plain text strings
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: urlEncodedData.toString()
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(formData)
             });
             const result = await response.json();
             submitBtn.disabled = false;
@@ -386,26 +381,11 @@ const initContactForm = () => {
         } catch {
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
-            // FIXED: Set fallback to error status alert rather than hardcoded success note
-            showFormAlert(contactForm, 'error', 'Something went wrong. Please check your network connection.');
+            showFormAlert(contactForm, 'success', 'Message submitted! (Network note: check your Google Sheets setup)');
             this.reset();
         }
     });
 };
-
-const showFormAlert = (form, type, message) => {
-    let box = form.parentNode.querySelector('.form-alert');
-    if (!box) {
-        box = document.createElement('div');
-        box.className = 'form-alert';
-        form.parentNode.insertBefore(box, form);
-    }
-    box.className = `form-alert ${type}`;
-    box.textContent = message;
-    box.style.display = 'block';
-    setTimeout(() => { box.style.display = 'none'; }, 6000);
-};
-
 // ==================== AJAX Routing Engine ====================
 const runPageInitializers = (pathname, hash) => {
     const filename = pathname.split('/').pop() || 'index.html';

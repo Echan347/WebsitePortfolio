@@ -156,7 +156,7 @@ const initBgDateTime = () => {
         hours = hours % 12 || 12;
         const minutes = String(malaysiaTime.getMinutes()).padStart(2, '0');
         const seconds = String(malaysiaTime.getSeconds()).padStart(2, '0');
-        currentT.textContent = `${hours}:${minutes}:${seconds}${ampm}`;
+        currentT.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
 
         const options = {
             day: 'numeric',
@@ -172,6 +172,19 @@ const initBgDateTime = () => {
     if (!bgDateTimeInterval) {
         bgDateTimeInterval = setInterval(updateClock, 1000);
     }
+};
+
+// ==================== Hero Background Parallax ====================
+const initHeroBackgroundParallax = () => {
+    const heroBg = document.querySelector('.hero-background');
+    if (!heroBg) return;
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        if (scrolled < window.innerHeight) {
+            heroBg.style.transform = `translateY(${scrolled * 0.3}px) scale(1.02)`;
+        }
+    });
 };
 
 // ==================== Scroll Animation ====================
@@ -386,6 +399,7 @@ const initContactForm = () => {
         }
     });
 };
+
 // ==================== AJAX Routing Engine ====================
 const runPageInitializers = (pathname, hash) => {
     const filename = pathname.split('/').pop() || 'index.html';
@@ -425,6 +439,7 @@ const runPageInitializers = (pathname, hash) => {
         initTypingAnimation();
         initContactForm();
         initBgDateTime();
+        initHeroBackgroundParallax();
     } else if (filename === 'projects.html') {
         if (typeof window.renderProjects === 'function') {
             window.renderProjects();
@@ -558,3 +573,4 @@ window.initContactForm = initContactForm;
 window.initTypingAnimation = initTypingAnimation;
 window.openLightbox = openLightbox;
 window.closeLightbox = closeLightbox;
+window.initHeroBackgroundParallax = initHeroBackgroundParallax;

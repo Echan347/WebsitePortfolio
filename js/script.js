@@ -334,7 +334,7 @@ const setupGalleryFilter = () => {
 };
 
 // ==================== Form Handling (Google Sheets Integration) ====================
-const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyNbnHQ8CoToriHaPBvylR5rFtX8z05O1z6v3zo4wV1XA1S0ckN2CkbSzdhgYx_l__0/exec'; // Paste your Google Apps Script URL here
+const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwg2OcH4T-AY04G8gxUAcSSkkPKgz0tCHhcy1pDnxuenddrmSkSJ6gZJVRsrHwVFno/exec'; // Ensure this is your latest URL
 
 const initContactForm = () => {
     const contactForm = document.querySelector('.contact-form');
@@ -344,61 +344,44 @@ const initContactForm = () => {
         e.preventDefault();
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
+        
         const nameVal = this.querySelector('input[type="text"]').value.trim();
         const emailVal = this.querySelector('input[type="email"]').value.trim();
         const msgVal = this.querySelector('textarea').value.trim();
-        const formData = { name: nameVal, email: emailVal, message: msgVal };
 
         submitBtn.disabled = true;
         submitBtn.innerHTML = `<span class="btn-spinner"></span> Sending...`;
 
-        if (!GOOGLE_SHEET_WEBAPP_URL) {
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                showFormAlert(contactForm, 'success', 'Demo mode: Add your Google Sheets URL in js/script.js to save messages!');
-                this.reset();
-            }, 1000);
-            return;
-        }
+        // FIX: Send data as standard URL parameters instead of raw JSON text
+        const urlEncodedData = new URLSearchParams();
+        urlEncodedData.append('name', nameVal);
+        urlEncodedData.append('email', emailVal);
+        urlEncodedData.append('message', msgVal);
 
         try {
             const response = await fetch(GOOGLE_SHEET_WEBAPP_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(formData)
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: urlEncodedData.toString()
             });
+            
             const result = await response.json();
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
+            
             if (result.result === 'success') {
                 showFormAlert(contactForm, 'success', 'Message sent! I will get back to you soon.');
                 this.reset();
             } else {
                 showFormAlert(contactForm, 'error', 'Error: ' + (result.error || 'Unknown'));
             }
-        } catch {
+        } catch (err) {
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
-            showFormAlert(contactForm, 'success', 'Message submitted! (Network note: check your Google Sheets setup)');
-            this.reset();
+            showFormAlert(contactForm, 'error', 'Network error. Please try again.');
         }
     });
 };
-
-const showFormAlert = (form, type, message) => {
-    let box = form.parentNode.querySelector('.form-alert');
-    if (!box) {
-        box = document.createElement('div');
-        box.className = 'form-alert';
-        form.parentNode.insertBefore(box, form);
-    }
-    box.className = `form-alert ${type}`;
-    box.textContent = message;
-    box.style.display = 'block';
-    setTimeout(() => { box.style.display = 'none'; }, 6000);
-};
-
 // ==================== AJAX Routing Engine ====================
 const runPageInitializers = (pathname, hash) => {
     const filename = pathname.split('/').pop() || 'index.html';

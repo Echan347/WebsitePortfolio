@@ -492,7 +492,9 @@ body.menu-open {
     border-radius: 12px;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     padding-top: 6px;
+    box-sizing: border-box;
 }
 
 .scroll-dot {
@@ -500,6 +502,7 @@ body.menu-open {
     height: 8px;
     background: currentColor;
     border-radius: 2px;
+    margin: 0 auto;
     animation: scroll-bounce 1.5s ease infinite;
 }
 

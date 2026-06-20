@@ -486,21 +486,21 @@ body.menu-open {
 }
 
 .scroll-mouse {
-  width: 22px;
-  height: 36px;
-  border: 2px solid currentColor;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  padding-top: 6px;
+    width: 22px;
+    height: 36px;
+    border: 2px solid currentColor;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
 }
 
 .scroll-dot {
-  width: 4px;
-  height: 8px;
-  background: currentColor;
-  border-radius: 2px;
-  animation: scroll-bounce 1.5s ease infinite;
+    width: 4px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 2px;
+    animation: scroll-bounce 1.5s ease infinite;
 }
 
 @keyframes scroll-bounce {

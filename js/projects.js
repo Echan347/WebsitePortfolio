@@ -65,68 +65,82 @@ const renderProjects = () => {
 
         grid.appendChild(card);
     });
+
+    // Automatically render the toolbox on the same page
+    renderToolbox();
+};
+
+// ==================== Toolbox / Tools List ====================
+const toolboxTools = [
+    { name: "Visual Studio", icon: "visualstudio", category: "IDE" },
+    { name: "Visual Studio .NET", icon: "dotnet", category: "IDE / Framework" },
+    { name: "Figma", icon: "figma", category: "Design Tool" },
+    { name: "Draw.io", icon: "diagramsdotnet", category: "Diagramming" },
+    { name: "Antigravity", icon: "antigravity", category: "AI Coding Agent" },
+    { name: "GitHub", icon: "github", category: "Version Control" },
+    { name: "Android Studio", icon: "androidstudio", category: "Mobile IDE" },
+    { name: "Photoshop", icon: "adobephotoshop", category: "Graphic Design" },
+    { name: "Illustrator", icon: "adobeillustrator", category: "Vector Design" },
+    { name: "Linux", icon: "linux", category: "OS / Server" },
+    { name: "NetBeans", icon: "apachenetbeans", category: "Java IDE" },
+    { name: "Gemini", icon: "googlegemini", category: "AI Assistant" },
+    { name: "ChatGPT", icon: "openai", category: "AI Assistant" },
+    { name: "DeepSeek", icon: "deepseek", category: "AI Assistant" },
+    { name: "Blackbox AI", icon: "blackbox", category: "AI Coding Assistant" },
+    { name: "Acrobat", icon: "adobeacrobatreader", category: "PDF Editor" }
+];
+
+const customToolIcons = {
+    antigravity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><ellipse cx="12" cy="12" rx="9" ry="5" stroke="currentColor" transform="rotate(-30 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="5" stroke="currentColor" transform="rotate(30 12 12)"/></svg>`,
+    blackbox: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`
+};
+
+const getToolIconHtml = (iconKey, name) => {
+    const key = iconKey.toLowerCase();
+    if (customToolIcons[key]) {
+        return customToolIcons[key];
+    }
+    // Fetch official colored SVG logo from Simple Icons CDN
+    return `<img src="https://cdn.simpleicons.org/${key}" alt="${name}" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/npm/lucide-static@0.321.0/icons/box.svg';">`;
+};
+
+const renderToolbox = () => {
+    const grid = document.getElementById('toolbox-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    toolboxTools.forEach((tool, index) => {
+        const card = document.createElement('div');
+        card.className = 'tool-card fade-in';
+        card.style.animationDelay = `${index * 0.05}s`;
+
+        const iconHtml = getToolIconHtml(tool.icon, tool.name);
+
+        card.innerHTML = `
+            <div class="tool-logo-container">
+                ${iconHtml}
+            </div>
+            <div class="tool-info">
+                <span class="tool-name">${tool.name}</span>
+                <span class="tool-category">${tool.category}</span>
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+    
+    // Wire up intersection observer for toolbox section if needed
+    if (typeof window.observer === 'object' && window.observer.observe) {
+        document.querySelectorAll('.toolbox-section, .tool-card').forEach(el => window.observer.observe(el));
+    }
 };
 
 // Run when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     renderProjects();
-    renderTools();
 });
 
 window.renderProjects = renderProjects;
-window.renderTools = renderTools;
-
-// ==================== Tools & Technologies List ====================
-const tools = [
-    { name: "Visual Studio", logo: "https://cdn.simpleicons.org/visualstudio" },
-    { name: "Visual Studio .NET", logo: "https://cdn.simpleicons.org/dotnet" },
-    { name: "Figma", logo: "https://cdn.simpleicons.org/figma" },
-    { name: "Draw.io", logo: "https://cdn.jsdelivr.net/gh/jgraph/drawio-desktop@dev/build/icon.svg" },
-    {
-        name: "Antigravity",
-        logo: `svg:<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="antigravityGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#880808" /><stop offset="100%" stop-color="#ff4444" /></linearGradient></defs><ellipse cx="16" cy="18" rx="12" ry="5" fill="none" stroke="url(#antigravityGrad)" stroke-width="2" transform="rotate(-15 16 18)" opacity="0.8"/><circle cx="16" cy="10" r="5" fill="url(#antigravityGrad)"><animate attributeName="cy" values="10;12;10" dur="2s" repeatCount="indefinite" /></circle></svg>`
-    },
-    { name: "GitHub", logo: "https://cdn.simpleicons.org/github" },
-    { name: "Android Studio", logo: "https://cdn.simpleicons.org/androidstudio" },
-    { name: "Photoshop", logo: "https://cdn.simpleicons.org/adobephotoshop" },
-    { name: "Illustrator", logo: "https://cdn.simpleicons.org/adobeillustrator" },
-    { name: "Linux", logo: "https://cdn.simpleicons.org/linux" },
-    { name: "NetBeans", logo: "https://cdn.simpleicons.org/apachenetbeanside" },
-    { name: "Gemini", logo: "https://cdn.simpleicons.org/googlegemini" },
-    { name: "ChatGPT", logo: "https://cdn.simpleicons.org/openai" },
-    { name: "DeepSeek", logo: "https://cdn.simpleicons.org/deepseek" },
-    {
-        name: "Blackbox AI",
-        logo: `svg:<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="blackboxGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2b0c0c" /><stop offset="100%" stop-color="#880808" /></linearGradient></defs><rect x="5" y="5" width="22" height="22" rx="4" fill="url(#blackboxGrad)" stroke="#ff4444" stroke-width="1.5" /><path d="M11 12l4 4-4 4M17 20h4" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>`
-    },
-    { name: "Adobe Acrobat", logo: "https://cdn.simpleicons.org/adobeacrobatreader" }
-];
-
-// ==================== Auto-Render Tools Grid ====================
-const renderTools = () => {
-    const grid = document.getElementById('tools-grid');
-    if (!grid) return;
-
-    grid.innerHTML = '';
-
-    tools.forEach((tool, index) => {
-        const item = document.createElement('div');
-        item.className = 'tool-item fade-in';
-        item.style.animationDelay = `${index * 0.05}s`;
-
-        let logoHTML = '';
-        if (tool.logo.startsWith('svg:')) {
-            logoHTML = tool.logo.substring(4);
-        } else {
-            logoHTML = `<img src="${tool.logo}" alt="${tool.name}" class="tool-logo-img">`;
-        }
-
-        item.innerHTML = `
-            <div class="tool-logo-wrapper">${logoHTML}</div>
-            <span class="tool-name">${tool.name}</span>
-        `;
-
-        grid.appendChild(item);
-    });
-};
+window.renderToolbox = renderToolbox;
 

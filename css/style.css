@@ -2520,12 +2520,13 @@ body.menu-open {
 }
 
 
+/* Light mode adjustments */
 :root.light-mode .hero-background::after {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* ── Tools Section ───────────────────────────────────────────── */
-.tools-section {
+/* ── Toolbox Section & Tool Cards ────────────────────────────── */
+.toolbox-section {
     padding: 90px 0;
     background-color: var(--bg-secondary);
     border-top: 2px solid var(--border);
@@ -2533,64 +2534,84 @@ body.menu-open {
     z-index: 10;
 }
 
-.tools-grid {
+.toolbox-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.2rem;
-    margin-top: 2.5rem;
+    gap: 1.25rem;
+    margin-top: 2rem;
 }
 
-.tool-item {
+.tool-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
     display: flex;
     align-items: center;
     gap: 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
     transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    cursor: default;
 }
 
-.tool-item:hover {
-    transform: translateY(-4px);
+.tool-card:hover {
+    transform: translateY(-3px);
     border-color: var(--accent);
     box-shadow: 0 8px 25px var(--shadow);
 }
 
-.tool-logo-wrapper {
-    width: 32px;
-    height: 32px;
+.tool-logo-container {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: rgba(var(--accent-rgb), 0.06);
+    border: 1px solid rgba(var(--accent-rgb), 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    color: var(--accent-hover);
+    transition: all var(--transition);
+    overflow: hidden;
 }
 
-.tool-logo-wrapper img,
-.tool-logo-wrapper svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+.tool-card:hover .tool-logo-container {
+    background: rgba(var(--accent-rgb), 0.12);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.2);
+    transform: scale(1.05);
+}
+
+.tool-logo-container svg,
+.tool-logo-container img {
+    width: 24px;
+    height: 24px;
     display: block;
+    object-fit: contain;
 }
 
-.tool-logo-img {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+.tool-logo-container svg {
+    fill: currentColor;
 }
 
-/* Invert github icon on dark mode to be visible */
-:root:not(.light-mode) .tool-logo-img[alt="GitHub"] {
-    filter: invert(1) brightness(1.5) drop-shadow(0 2px 4px rgba(255, 255, 255, 0.15));
+.tool-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
 }
 
 .tool-name {
+    font-weight: 700;
     font-size: 0.95rem;
-    font-weight: 600;
     color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Light mode overrides for tools section */
-:root.light-mode .tools-section {
-    background-color: var(--bg-secondary);
-    border-top: 1px solid var(--border);
+.tool-category {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }

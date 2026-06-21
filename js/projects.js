@@ -66,81 +66,84 @@ const renderProjects = () => {
         grid.appendChild(card);
     });
 
-    // Automatically render the toolbox on the same page
-    renderToolbox();
+    // Also render tools if the grid is present on this page
+    renderTools();
 };
 
-// ==================== Toolbox / Tools List ====================
-const toolboxTools = [
-    { name: "Visual Studio", icon: "visualstudio", category: "IDE" },
-    { name: "Visual Studio .NET", icon: "dotnet", category: "IDE / Framework" },
-    { name: "Figma", icon: "figma", category: "Design Tool" },
-    { name: "Draw.io", icon: "diagramsdotnet", category: "Diagramming" },
-    { name: "Antigravity", icon: "antigravity", category: "AI Coding Agent" },
-    { name: "GitHub", icon: "github", category: "Version Control" },
-    { name: "Android Studio", icon: "androidstudio", category: "Mobile IDE" },
-    { name: "Photoshop", icon: "adobephotoshop", category: "Graphic Design" },
-    { name: "Illustrator", icon: "adobeillustrator", category: "Vector Design" },
-    { name: "Linux", icon: "linux", category: "OS / Server" },
-    { name: "NetBeans", icon: "apachenetbeans", category: "Java IDE" },
-    { name: "Gemini", icon: "googlegemini", category: "AI Assistant" },
-    { name: "ChatGPT", icon: "openai", category: "AI Assistant" },
-    { name: "DeepSeek", icon: "deepseek", category: "AI Assistant" },
-    { name: "Blackbox AI", icon: "blackbox", category: "AI Coding Assistant" },
-    { name: "Acrobat", icon: "adobeacrobatreader", category: "PDF Editor" }
+// ==================== Tools & Technologies List ====================
+// To add more tools in the future:
+// Simply add a new item to this array.
+// Example: { name: "Python", iconSlug: "python" }
+// Find slugs on simpleicons.org (e.g. "figma", "visualstudio", "linux").
+// For custom tools not on simpleicons, specify a customSvg string.
+const tools = [
+    { name: "Visual Studio", iconSlug: "visualstudio" },
+    { name: "Visual Studio .NET", iconSlug: "dotnet" },
+    { name: "Figma", iconSlug: "figma" },
+    { name: "draw.io", iconSlug: "diagramsdotnet" },
+    {
+        name: "Antigravity",
+        iconSlug: "antigravity",
+        customSvg: `
+            <svg viewBox="0 0 24 24" class="custom-tool-icon" width="32" height="32" style="display: block;">
+                <defs>
+                    <linearGradient id="antiGravGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ff3333" />
+                        <stop offset="100%" stop-color="#aa0000" />
+                    </linearGradient>
+                </defs>
+                <path d="M12 2L4 10L12 18L20 10Z" fill="url(#antiGravGrad)"/>
+                <ellipse cx="12" cy="18" rx="8" ry="2" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-dasharray="3 3"/>
+                <ellipse cx="12" cy="21" rx="5" ry="1.2" fill="none" stroke="#ff3333" stroke-width="1" opacity="0.6"/>
+            </svg>
+        `
+    },
+    { name: "GitHub", iconSlug: "github" },
+    { name: "Android Studio", iconSlug: "androidstudio" },
+    { name: "Photoshop", iconSlug: "adobephotoshop" },
+    { name: "Illustrator", iconSlug: "adobeillustrator" },
+    { name: "Linux", iconSlug: "linux" },
+    { name: "NetBeans", iconSlug: "apachenetbeans" },
+    { name: "Gemini", iconSlug: "googlegemini" },
+    { name: "ChatGPT", iconSlug: "openai" },
+    { name: "DeepSeek", iconSlug: "deepseek" },
+    { name: "Blackbox", iconSlug: "blackbox" },
+    { name: "Acrobat", iconSlug: "adobeacrobatreader" }
 ];
 
-const customToolIcons = {
-    antigravity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><ellipse cx="12" cy="12" rx="9" ry="5" stroke="currentColor" transform="rotate(-30 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="5" stroke="currentColor" transform="rotate(30 12 12)"/></svg>`,
-    blackbox: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`
-};
-
-const getToolIconHtml = (iconKey, name) => {
-    const key = iconKey.toLowerCase();
-    if (customToolIcons[key]) {
-        return customToolIcons[key];
-    }
-    // Fetch official colored SVG logo from Simple Icons CDN
-    return `<img src="https://cdn.simpleicons.org/${key}" alt="${name}" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/npm/lucide-static@0.321.0/icons/box.svg';">`;
-};
-
-const renderToolbox = () => {
-    const grid = document.getElementById('toolbox-grid');
+// ==================== Auto-Render Tools ====================
+const renderTools = () => {
+    const grid = document.getElementById('tools-grid');
     if (!grid) return;
 
     grid.innerHTML = '';
 
-    toolboxTools.forEach((tool, index) => {
+    tools.forEach((tool, index) => {
         const card = document.createElement('div');
         card.className = 'tool-card';
         card.style.animationDelay = `${index * 0.05}s`;
 
-        const iconHtml = getToolIconHtml(tool.icon, tool.name);
+        let iconHTML = '';
+        if (tool.customSvg) {
+            iconHTML = tool.customSvg;
+        } else {
+            iconHTML = `<img src="https://cdn.simpleicons.org/${tool.iconSlug}" alt="${tool.name} Logo" loading="lazy">`;
+        }
 
         card.innerHTML = `
-            <div class="tool-logo-container">
-                ${iconHtml}
+            <div class="tool-icon-wrapper">
+                ${iconHTML}
             </div>
-            <div class="tool-info">
-                <span class="tool-name">${tool.name}</span>
-                <span class="tool-category">${tool.category}</span>
-            </div>
+            <span class="tool-name">${tool.name}</span>
         `;
 
         grid.appendChild(card);
     });
-    
-    // Wire up intersection observer for toolbox section if needed
-    if (typeof window.observer === 'object' && window.observer.observe) {
-        document.querySelectorAll('.toolbox-section, .tool-card').forEach(el => window.observer.observe(el));
-    }
 };
 
 // Run when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    renderProjects();
-});
+document.addEventListener('DOMContentLoaded', renderProjects);
 
 window.renderProjects = renderProjects;
-window.renderToolbox = renderToolbox;
+window.renderTools = renderTools;
 

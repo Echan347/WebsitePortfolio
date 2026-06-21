@@ -863,9 +863,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==================== Gallery Build/Filter Helpers ====================
-// gallery.js's renderGallery() is the actual card builder and calls this
-// as a post-render hook. Keep this a no-op stub to avoid re-triggering
-// renderGallery (which would cause infinite recursion).
 const buildGallery = () => { };
 
 // Wires up the "All / Magazine Covers / UI/UX Design" filter buttons

@@ -1,6 +1,4 @@
 // ==================== Shared Navigation Injector ====================
-// This script injects the same navbar into every page automatically.
-// It highlights the active link based on the current page URL.
 
 (function () {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';

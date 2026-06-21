@@ -101,8 +101,6 @@ const galleryItems = [
 ];
 
 // ==================== Group Helper ====================
-// Normalizes an item's "images" array (strings or {src,title} objects) into
-// a consistent [{src, title}] shape. Returns null if the item isn't a group.
 const getGroupImages = (item) => {
     if (!Array.isArray(item.images) || item.images.length === 0) return null;
     return item.images.map(img => (typeof img === 'string') ? { src: img, title: '' } : img);
@@ -110,9 +108,6 @@ const getGroupImages = (item) => {
 window.getGroupImages = getGroupImages;
 
 // ==================== Filter Tabs Renderer ====================
-// Turns a category id like "ui-mockups" or "brand_assets" into a readable
-// label ("Ui Mockups", "Brand Assets") when it hasn't been given a custom
-// label in galleryCategories above.
 const titleizeCategory = (id) => id
     .replace(/[-_]+/g, ' ')
     .replace(/\b\w/g, c => c.toUpperCase());

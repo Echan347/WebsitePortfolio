@@ -71,11 +71,6 @@ const renderProjects = () => {
 };
 
 // ==================== Tools & Technologies List ====================
-// To add more tools in the future:
-// Simply add a new item to this array.
-// Example: { name: "Python", iconSlug: "python" }
-// Find slugs on simpleicons.org (e.g. "figma", "visualstudio", "linux").
-// For custom tools not on simpleicons, specify a customSvg string.
 const tools = [
     { name: "Visual Studio", iconSlug: "visualstudio" },
     { name: "Visual Studio .NET", iconSlug: "dotnet" },

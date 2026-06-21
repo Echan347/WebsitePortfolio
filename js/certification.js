@@ -1,16 +1,5 @@
 // ==================== Certifications List ====================
-// HOW TO ADD A CERTIFICATION:
-// Copy one of the objects below and fill in the details.
-// The card will appear automatically — no HTML editing required.
-//
-// Fields:
-//   title      - Name of the certification/course
-//   issuer     - Organization that issued it  
-//   date       - Date completed (e.g. "Dec 2025")
-//   credentialUrl - Link to verify the certificate (use "#" if none)
-//   category   - "google" | "training" | "course" | "professional"
-//   badge      - Emoji or short label shown on the card
-// ============================================================
+
 
 const certifications = [
     {
@@ -30,16 +19,6 @@ const certifications = [
             "Accelerate Your Job Search with AI"
         ]
     }
-    // ── ADD MORE CERTIFICATIONS BELOW ──────────────────────────────────────────
-    // {
-    //     title: "Your Certification Name",
-    //     issuer: "Issuing Organization",
-    //     date: "Month Year",
-    //     credentialUrl: "https://link-to-verify.com",
-    //     category: "training",   // or "google", "course", "professional"
-    //     badge: "🎓",
-    //     courses: []             // optional sub-courses list, leave empty [] if none
-    // }
 ];
 
 // ==================== Auto-Render Certification Cards ====================

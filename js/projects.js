@@ -5,8 +5,8 @@ const projects = [
         title: "SeedOfLife",
         description: "Contributed to building and enhancing an AI-powered mobile app for urban plant care in Malaysia. Features include tropical plant identification via PlantNet and Plant.id APIs, climate-adaptive care scheduling, community forums, and a GPS nursery locator.",
         tech: ["Flutter", "Firebase", "PlantNet API", "Plant.id API", "MySQL"],
-        link: "#",
-        image: "images/ShowtimeManager.jpeg",
+        link: "https://github.com/Killing4fun/FYP-SeedOfLife",
+        image: "images/home_dashboard.png",
         gradient: "linear-gradient(135deg, #1d976c 0%, #93f9b9 100%)"
     },
     {

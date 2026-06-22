@@ -13,7 +13,7 @@ const projects = [
         title: "Showtime Manager System",
         description: "Java desktop application for managing video content and creating broadcast schedules. Features a Gantt-style 24-hour drag-and-drop timeline, auto-reflow to eliminate gaps/overlaps, real-time search, and week navigation.",
         tech: ["JavaScript", "MySQL"],
-        link: "#",
+        link: "https://github.com/Killing4fun/Showtime-Manager",
         image: "images/ShowtimeManager.jpeg",
         gradient: "linear-gradient(135deg, #4f00bc 0%, #290060 100%)"
     },

@@ -9,7 +9,6 @@
             <a href="index.html" class="logo">Amirul Ehsan</a>
             <div class="nav-right">
                 <ul class="nav-links" id="nav-links">
-                    <li><a href="index.html"          id="nav-home">Home</a></li>
                     <li><a href="projects.html"       id="nav-projects">Projects</a></li>
                     <li><a href="work.html"           id="nav-work">Work</a></li>
                     <li><a href="school.html"         id="nav-school">Education</a></li>
@@ -39,13 +38,11 @@
 
     // Highlight active link
     const map = {
-        'index.html': 'nav-home',
-        '':           'nav-home',
-        'projects.html':     'nav-projects',
-        'work.html':         'nav-work',
-        'school.html':       'nav-school',
-        'certification.html':'nav-cert',
-        'gallery.html':      'nav-gallery',
+        'projects.html': 'nav-projects',
+        'work.html': 'nav-work',
+        'school.html': 'nav-school',
+        'certification.html': 'nav-cert',
+        'gallery.html': 'nav-gallery',
     };
 
     const activeId = map[currentPage];
